@@ -1,6 +1,6 @@
 # the-lazy-learners
 
-Occationally, for some reasons, I have to complete a chain of courses on [learn.microsoft.com](https://learn.microsoft.com). Even though I can easily go through each course by simply clicking the button continue on the bottom of each page, randomly answer to questions till it completes, I am too lazy that can not stand to repeatedly click the buttons, it is freaking boring, and yeah, it still takes time.
+Occationally, for some reasons, I have to complete a chain of courses on [learn.microsoft.com](https://learn.microsoft.com). Even though I can easily go through each course by simply clicking the `continue` button on the bottom of each page, randomly answer to questions till it completes, I am too lazy that can not stand to repeatedly click the buttons, it is freaking boring, and yeah, it still takes time.
 
 Here we go, the simple toolkit helps to... click continue buttons, and brain-lessly answer to questions on the way.
 
