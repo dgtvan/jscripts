@@ -9,7 +9,7 @@ Here we go, the simple toolkit helps to... click continue buttons, and brain-les
 1/ Install extension [Script executer](https://github.com/aneelkkhatri/script-executor) on Chrom browser.
 The extension is very simple and works very well, I really like it so that I made a copy of it, and put it on the folder `script-executor`, just in case it disappears someday.
 
-2/ Open the the extension and load necesary script. (Check the section `Scripts` down below).
+2/ Open the the extension and load necessary script. (Check the section `Scripts` down below).
 
 3/ Navigate to your learning courses and enjoy.
 
