@@ -1,21 +1,19 @@
-# the-lazy-learners
+# jscripts
 
-Occationally, for some reasons, I have to complete a chain of courses on [learn.microsoft.com](https://learn.microsoft.com) or [coursera](https://coursera.org). Even though I can easily go through each course by simply clicking the `continue` button on the bottom of each page, randomly answer to questions till it completes, I am too lazy that can not stand to repeatedly click the buttons, it is freaking boring, and yeah, it still takes time.
-
-Here we go, the simple toolkit helps to... click continue buttons, and brain-lessly answer to questions on the way.
+Scripts I use to add additional functions on specific websites for personal purposes.
 
 ## Setup
 
 1/ Install extension [Script executer](https://github.com/aneelkkhatri/script-executor) on Chrom browser.
 The extension is very simple and works very well, I really like it so that I made a copy of it, and put it on the folder `script-executor`, just in case it disappears someday.
 
-2/ Open the the extension and load necessary script. (Check the section `Scripts` down below).
+2/ Open the the extension and load necessary script, then Save. (Check the section `Scripts` down below)
 
-3/ Navigate to your learning courses and enjoy.
+3/ Done.
 
 ## Scripts
 
-### Learn.microsoft.com
+### Lazy learn ar learn.microsoft.com
 ```
 setInterval(() =>
 {
@@ -31,7 +29,7 @@ setInterval(() =>
 1000)
 ```
 
-### Coursera.org
+### Lazy learn at coursera.org
 ```
 var __is_running = false;
 
@@ -111,4 +109,134 @@ async function main() {
 }
 
 this.setInterval(main, 1000);
+```
+
+### Show total points on Jira
+```
+//**************************************
+// Show total points on Jira
+//**************************************
+const RegisterTotalStoryPointCalculation = () => {
+    if (!window.location.href.includes('jira.eml.com.au'))
+        return;
+
+    setInterval(CalculateTotalStoryPoint, 1000);
+}
+
+const CalculateTotalStoryPoint = () => {
+    const StoryPointClass = 'customfield_10004';
+    const StoryPointAttribute = 'StoryPointRow'
+
+    const tbody = document.querySelector('#issuetable tbody');
+
+    if (tbody === null)
+        return;
+
+    if (tbody.childNodes.length === 0)
+        return;
+
+    const rows = tbody.childNodes;
+
+    // Exit if total story point exists
+    if (rows[rows.length -1].hasAttribute(StoryPointAttribute))
+        return;
+
+    // Sum story points
+    let totalStoryPoint = 0;
+    rows.forEach(row => {
+        row.childNodes.forEach(column => {
+            if (column.getAttribute('class') === StoryPointClass) {
+                const point = parseFloat(column.innerText);
+                totalStoryPoint += isNaN(point) ? 0 : point;
+            }
+        });
+    });
+
+    // Create total story point row
+    const totalStoryPointRow = rows[0].cloneNode(true);
+    totalStoryPointRow.setAttribute(StoryPointAttribute, '');
+    totalStoryPointRow.childNodes.forEach(column => {
+        const columnClass = column.getAttribute('class');
+
+        // Clear all columns except the total story point
+        column.innerHTML = '';
+
+        if (columnClass === StoryPointClass) {
+            column.innerHTML = totalStoryPoint;''
+            column.style.backgroundColor = '#ffbf00';
+        }
+    });
+
+    // Append the total story point to the view
+    tbody.appendChild(totalStoryPointRow);
+}
+
+RegisterTotalStoryPointCalculation();
+```
+
+### Show pocker points at scrumpoker-online.org
+```
+//**************************************
+// Show pocker point
+//**************************************
+const RegisterPockerPoints = () => {
+    if (!window.location.href.includes('scrumpoker-online.org'))
+        return;
+
+    setInterval(ShowPockerPoints, 1000);
+}
+
+const ShowPockerPoints = () => {
+    const PockerMagic = 'pocker-magic';
+
+    const voteGroup = document.querySelector('tbody[role="rowgroup"]');
+
+    if (voteGroup === null)
+        return;
+
+    const votes = voteGroup.childNodes;
+
+    let highestPoint = {
+        nodes: [],
+        point: -1
+    }
+
+    votes.forEach(vote => {
+        if (vote.nodeName === '#comment')
+            return;
+
+        if (vote.hasAttribute(PockerMagic))
+            return;
+
+        const paticipantNode = vote.querySelector('td[class*=mat-column-displayName]');
+        const pointNode = vote.querySelector('div[class*=flip-card-back]').querySelectorAll(':scope > span')[0];
+
+        const pointRaw = parseFloat(pointNode.innerText);
+        const point = isNaN(pointRaw) ? '-' : pointRaw;
+
+        paticipantNode.innerText = paticipantNode.innerText + ' (' + point + ')';
+
+        console.log(pointRaw);
+        console.log(point);
+
+        if (point !== '-') {
+            if (highestPoint.point < point) {
+                highestPoint.nodes = [];
+                highestPoint.point = point;
+            }
+
+            if (highestPoint.point == point) {
+                highestPoint.nodes.push(vote);
+            }
+        }
+
+        vote.setAttribute(PockerMagic, '');
+    });
+
+    highestPoint.nodes.forEach(vote => {
+        vote.style.fontWeight = 600;
+    });
+}
+
+RegisterPockerPoints();
 ```
