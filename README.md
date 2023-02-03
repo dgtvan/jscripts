@@ -244,10 +244,12 @@ RegisterPockerPoints();
 ### Enable blocked text selection
 https://stackoverflow.com/questions/7101982/enabling-blocked-text-selection-using-javascript
 ```
+//**************************************
+// Enable blocked text selection
+//**************************************
 javascript:
 (function(){
   function allowTextSelection(){
-    window.console&&console.log('allowTextSelection');
     var style=document.createElement('style');
     style.type='text/css';
     style.innerHTML='*,p,div{user-select:text !important;-moz-user-select:text !important;-webkit-user-select:text !important;}';
@@ -271,4 +273,51 @@ javascript:
   allowTextSelection();
 }
 )();
+```
+
+### Clean User Management UI for Ease of Development
+```
+//**************************************
+// Clean User Management UI for Ease of Development
+//**************************************
+const ClearUserManagementUI = () => {
+    if (!window.location.href.includes('https://usermanagement.mnlaswig.int/'))
+        return;
+
+    setInterval(ClearUserManagementUI, 500);
+}
+
+const ClearUserManagementUI = () => {
+    const whiteInstances = [
+        'UserManagement (Local)',
+        'UserManagement (PreQA)',
+        'Weekly Earnings Calculator (Local)',
+        'Weekly Earnings Calculator (PreUAT)'
+    ];
+    const instances = document.querySelectorAll('#UserInstanceGroups > table > tbody > tr');
+    instances.forEach(instance => {
+        const instanceName = instance.querySelector('td').innerText;
+        if (!whiteInstances.includes(instanceName))
+            instance?.remove();
+    });  
+    
+    const whiteGroups = [
+        'User Management',
+        'WEC BAS User',
+        'WEC Employer Super User',
+        'WEC Empoyer User'
+    ];
+    const groups = document.querySelectorAll('#UserGroupDialogForm > .box-body > div.mb-2');
+    groups.forEach(group => {
+        const groupName = group.querySelector('label').innerText;
+        if (!whiteGroups.includes(groupName))
+            group?.remove();
+    });  
+    
+    document.getElementById('subscriptionarea')?.remove();
+    
+    document.getElementById('UserTeams')?.remove();
+}
+
+RegisterClearUserManagementUI();
 ```
