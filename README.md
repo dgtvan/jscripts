@@ -317,6 +317,8 @@ const ClearUserManagementUI = () => {
     document.getElementById('subscriptionarea')?.remove();
     
     document.getElementById('UserTeams')?.remove();
+    
+    document.querySelector('.wiki-toolbar-container')?.remove();
 }
 
 RegisterClearUserManagementUI();
