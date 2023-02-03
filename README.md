@@ -305,7 +305,7 @@ const ClearUserManagementUI = () => {
         'User Management',
         'WEC BAS User',
         'WEC Employer Super User',
-        'WEC Empoyer User'
+        'WEC Employer User'
     ];
     const groups = document.querySelectorAll('#UserGroupDialogForm > .box-body > div.mb-2');
     groups.forEach(group => {
