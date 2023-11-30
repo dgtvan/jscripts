@@ -1,104 +1,77 @@
-// // Show total points on Jira
-// const RegisterTotalStoryPointCalculation = () => {
-    // if (!window.location.href.includes('jira.eml.com.au'))
-        // return;
 
-    // setInterval(CalculateTotalStoryPoint, 1000);
-// }
+const CalculateTotalStoryPoint = () => {	
+	//
+	// Find the index of column Story Points
+	//
+	
+	let storyPointColumnIndex = -1;
+	const issueColumns = Array.from(document.querySelectorAll('table[aria-label=Issues] thead tr:first-child th'))
+	issueColumns.forEach((column, index) => {
+		const isStoryPointColumn = Array.from(column.querySelectorAll('span')).some(span => span.innerText.includes('Story Points'));
+		if (isStoryPointColumn) {
+			storyPointColumnIndex = index;
+			return;
+		}
+	});
+	
+	if (storyPointColumnIndex == -1) {
+		return;
+	}
+	
+	//
+	// Calculate total story point
+	//
+	
+	let totalStoryPoint = 0;
+		
+    const tickets = Array.from(document.querySelectorAll('table[aria-label=Issues] tbody tr'));
+	if (tickets.length == 0) {
+		return;
+	}
+	
+	tickets.forEach(ticket => {
+		const storyPointText = Array.from(ticket.querySelectorAll('td'))[storyPointColumnIndex].querySelector('div')?.innerText;
+		const storyPoint = parseInt(storyPointText);
+		
+		totalStoryPoint += isNaN(storyPoint) ? 0 : storyPoint;
+	});
 
-// const CalculateTotalStoryPoint = () => {
-    // const StoryPointClass = 'customfield_10004';
-    // const StoryPointAttribute = 'StoryPointRow'
-
-    // const tbody = document.querySelector('#issuetable tbody');
-
-    // if (tbody === null)
-        // return;
-
-    // if (tbody.childNodes.length === 0)
-        // return;
-
-    // const rows = tbody.childNodes;
-
-    // // Exit if total story point exists
-    // if (rows[rows.length -1].hasAttribute(StoryPointAttribute))
-        // return;
-
-    // // Sum story points
-    // let totalStoryPoint = 0;
-    // rows.forEach(row => {
-        // row.childNodes.forEach(column => {
-            // if (column.getAttribute('class') === StoryPointClass) {
-                // const point = parseFloat(column.innerText);
-                // totalStoryPoint += isNaN(point) ? 0 : point;
-            // }
-        // });
-    // });
-
-    // // Create total story point row
-    // const totalStoryPointRow = rows[0].cloneNode(true);
-    // totalStoryPointRow.setAttribute(StoryPointAttribute, '');
-    // totalStoryPointRow.childNodes.forEach(column => {
-        // const columnClass = column.getAttribute('class');
-
-        // // Clear all columns except the total story point
-        // column.innerHTML = '';
-
-        // if (columnClass === StoryPointClass) {
-            // column.innerHTML = totalStoryPoint;''
-            // column.style.backgroundColor = '#ffbf00';
-        // }
-    // });
-
-    // // Append the total story point to the view
-    // tbody.appendChild(totalStoryPointRow);
-// }
-
-// RegisterTotalStoryPointCalculation();
-
-
+    //
+	// Add new row for the total story point
+	//
+	
+	const lastRow =  tickets[tickets.length - 1];
+	
+	let totalStoryPointRow = lastRow;
+	
+	if (!totalStoryPointRow.hasAttribute('StoryPointAttribute')) {
+		totalStoryPointRow = lastRow.cloneNode(true);
+		
+		lastRow.parentNode.appendChild(totalStoryPointRow);
+		
+		totalStoryPointRow.setAttribute('StoryPointAttribute', '');		
+	}
+	
+	totalStoryPointRow.childNodes.forEach((column, index) => {
+		if (index == storyPointColumnIndex) {
+			column.innerHTML = totalStoryPoint;''
+			column.style.backgroundColor = '#ffbf00';
+		} else {
+		
+			column.innerHTML = '';
+		}
+	});
+}
 
 const RegisterTotalStoryPointCalculation = () => {
-    if (!window.location.href.includes('https://employersmutual.atlassian.net/'))
+    if 
+    (
+        !window.location.href.includes('https://employersmutual.atlassian.net/jira/software/c/projects/') 
+        && window.location.href.includes('/issues/')
+    )
         return;
 
     setInterval(CalculateTotalStoryPoint, 1000);
 }
-
-const createEarnedPointBadge = (backlog) => {
-	const estimationContainer = backlog.querySelector('div[data-testid=software-backlog\\.card-list\\.estimations-and-actions-container]');
-	
-	const hasEarnedPointBage = estimationContainer.querySelector('div[earned-point-badge]') == null;
-	if (hasEarnedPointBage) {
-		return;
-	}		
-
-}
-
-
-const CalculateTotalStoryPoint = () => {
-    const backlogs = document.querySelectorAll('div[aria-controls*=HEADER-DROP]');
-	
-	backlogs.forEach(backlog => {
-		
-		createEarnedPointBadge(backlog);
-	
-		const tickets = backlog.querySelectorAll('div[data-testid=software-backlog\\.card-list\\.card\\.card-contents\\.card-container]');
-		
-		tickets.forEach(ticket => {
-			const actionButton = ticket.querySelector('div[data-testid=software-backlog\\.card-list\\.card\\.card-contents\\.context-menu] button');
-			
-			const ticketId = actionButton?.getAttribute('aria-label').match(/TI-\d+/)[0];
-			
-			const isActionButtonClicked = actionButton?.getAttribute('aria-expanded') === 'true';
-			
-			if (ticketId == 'TI-1855') {
-				console.log(isActionButtonClicked);
-			};
-		});
-
-	});
-}
-
 
 RegisterTotalStoryPointCalculation();
