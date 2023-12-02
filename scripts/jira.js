@@ -75,4 +75,3 @@ const RegisterTotalStoryPointCalculation = () => {
 }
 
 RegisterTotalStoryPointCalculation();
-
