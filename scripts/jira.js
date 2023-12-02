@@ -1,11 +1,16 @@
-
 const CalculateTotalStoryPoint = () => {	
 	//
 	// Find the index of column Story Points
 	//
 	
 	let storyPointColumnIndex = -1;
-	const issueColumns = Array.from(document.querySelectorAll('table[aria-label=Issues] thead tr:first-child th'))
+	
+	const issueColumns = 
+	    [
+	        ...Array.from(document.querySelectorAll('table[aria-label=Issues] thead tr:first-child th')),
+	        ...Array.from(document.querySelectorAll('table[id=issuetable] thead tr:first-child th'))
+	    ]
+
 	issueColumns.forEach((column, index) => {
 		const isStoryPointColumn = Array.from(column.querySelectorAll('span')).some(span => span.innerText.includes('Story Points'));
 		if (isStoryPointColumn) {
@@ -14,28 +19,44 @@ const CalculateTotalStoryPoint = () => {
 		}
 	});
 	
+
 	if (storyPointColumnIndex == -1) {
 		return;
 	}
-	
+
 	//
 	// Calculate total story point
 	//
 	
 	let totalStoryPoint = 0;
 		
-    const tickets = Array.from(document.querySelectorAll('table[aria-label=Issues] tbody tr'));
+    const tickets = 
+        [
+            ...Array.from(document.querySelectorAll('table[aria-label=Issues] tbody tr')),
+            ...Array.from(document.querySelectorAll('table[id=issuetable] tbody tr')),
+        ]
+        
 	if (tickets.length == 0) {
 		return;
 	}
 	
 	tickets.forEach(ticket => {
-		const storyPointText = Array.from(ticket.querySelectorAll('td'))[storyPointColumnIndex].querySelector('div')?.innerText;
-		const storyPoint = parseInt(storyPointText);
+	    if (ticket.hasAttribute('StoryPointAttribute')) {
+	        // Skip it because it's the row showing the total point.
+	        return;
+	    }
+	    
+		const storyPointTexts = 
+		    [
+		        Array.from(ticket.querySelectorAll('td'))[storyPointColumnIndex]?.innerText,
+		        Array.from(ticket.querySelectorAll('td'))[storyPointColumnIndex].querySelector('div')?.innerText
+	        ]
+	        
+		const storyPoint = storyPointTexts.map(text => parseInt(text)).find(point => !isNaN(point));
 		
-		totalStoryPoint += isNaN(storyPoint) ? 0 : storyPoint;
+		totalStoryPoint += storyPoint == null ? 0 : storyPoint;
 	});
-
+	
     //
 	// Add new row for the total story point
 	//
@@ -46,13 +67,11 @@ const CalculateTotalStoryPoint = () => {
 	
 	if (!totalStoryPointRow.hasAttribute('StoryPointAttribute')) {
 		totalStoryPointRow = lastRow.cloneNode(true);
-		
-		lastRow.parentNode.appendChild(totalStoryPointRow);
-		
 		totalStoryPointRow.setAttribute('StoryPointAttribute', '');		
+		lastRow.parentNode.appendChild(totalStoryPointRow);
 	}
 	
-	totalStoryPointRow.childNodes.forEach((column, index) => {
+	Array.from(totalStoryPointRow.children).forEach((column, index) => {
 		if (index == storyPointColumnIndex) {
 			column.innerHTML = totalStoryPoint;''
 			column.style.backgroundColor = '#ffbf00';
@@ -66,10 +85,12 @@ const CalculateTotalStoryPoint = () => {
 const RegisterTotalStoryPointCalculation = () => {
     if 
     (
-        !window.location.href.includes('https://employersmutual.atlassian.net/jira/software/c/projects/') 
-        && window.location.href.includes('/issues/')
-    )
+        !window.location.href.includes('https://employersmutual.atlassian.net/') 
+        && !window.location.href.includes('/issues/')
+    ) 
+    {
         return;
+    }
 
     setInterval(CalculateTotalStoryPoint, 1000);
 }
