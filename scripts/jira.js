@@ -96,3 +96,5 @@ const RegisterTotalStoryPointCalculation = () => {
 }
 
 RegisterTotalStoryPointCalculation();
+
+//Test gpg signing
