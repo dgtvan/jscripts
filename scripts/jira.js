@@ -8,7 +8,8 @@ const CalculateTotalStoryPoint = () => {
 	const issueColumns = 
 	    [
 	        ...Array.from(document.querySelectorAll('table[aria-label=Issues] thead tr:first-child th')),
-	        ...Array.from(document.querySelectorAll('table[id=issuetable] thead tr:first-child th'))
+	        ...Array.from(document.querySelectorAll('table[id=issuetable] thead tr:first-child th')),
+	        ...Array.from(document.querySelectorAll('table[class*=issue-table] thead tr:first-child th'))
 	    ]
 
 	issueColumns.forEach((column, index) => {
@@ -34,6 +35,7 @@ const CalculateTotalStoryPoint = () => {
         [
             ...Array.from(document.querySelectorAll('table[aria-label=Issues] tbody tr')),
             ...Array.from(document.querySelectorAll('table[id=issuetable] tbody tr')),
+            ...Array.from(document.querySelectorAll('table[class*=issue-table] tbody tr')),
         ]
         
 	if (tickets.length == 0) {
